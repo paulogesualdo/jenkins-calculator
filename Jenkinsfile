@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello, World') {
+        stage('Check operation') {
             steps {
-                echo 'Hello, world!'
+                echo 'Checking if the operation was passed as parameter'
             }
         }
     }
