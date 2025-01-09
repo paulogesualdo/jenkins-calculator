@@ -13,11 +13,13 @@ pipeline {
         }
 
         stage('Check operation') {
-            steps {
-                if (params.operation == '+') operationName = 'addition'
-                else if (params.operation == '-') operationName = 'subtraction'
-                else operationName = 'unknown'
-                echo "The operation chosen is: ${operationName}"
+            steps {          
+                script {
+                    if (params.operation == '+') operationName = 'addition'
+                    else if (params.operation == '-') operationName = 'subtraction'
+                    else operationName = 'unknown'
+                    echo "The operation chosen is: ${operationName}"
+                }
             }
         }
         stage('Input value') {
