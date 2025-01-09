@@ -25,6 +25,7 @@ pipeline {
                 echo 'Calling calculator pipeline'
             }
         }
+        
         stage('Show the new value') {
             steps {
                 echo 'The new value is: XXXX'
