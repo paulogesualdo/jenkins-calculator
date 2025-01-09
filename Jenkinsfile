@@ -1,12 +1,10 @@
 pipeline {
     agent any
+    parameters {  
+        string(name: 'operation', defaultValue: '+', description: 'Type + for addition or - for subtraction. Leave in blank for addition.')  
+    } 
 
     stages {
-        stage('Check operation') {
-            steps {
-                echo 'Checking if the operation was passed as parameter'
-            }
-        }
 
         stage('Show current total') {
             steps {
@@ -14,6 +12,14 @@ pipeline {
             }
         }
 
+        stage('Check operation') {
+            steps {
+                if (params.operation == '+') operationName = 'addition'
+                else if (params.operation == '-') operationName = 'subtraction'
+                else operationName = 'unknown'
+                echo "The operation chosen is: ${operationName}"
+            }
+        }
         stage('Input value') {
             steps {
                 echo 'Please type the value: XXXX'
@@ -25,7 +31,7 @@ pipeline {
                 echo 'Calling calculator pipeline'
             }
         }
-        
+
         stage('Show the new value') {
             steps {
                 echo 'The new value is: XXXX'
