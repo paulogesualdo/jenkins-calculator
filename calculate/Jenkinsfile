@@ -19,6 +19,17 @@ pipeline {
 
     stages {
 
+        stage('Show received values') {
+            steps {          
+                script {
+
+                    // Show received values on the console         
+                    echo "firstValue = ${firstValue}"
+                    echo "operation = ${operation}"
+                    echo "secondValue = ${secondValue}"
+                }
+            }
+        }        
         stage('Convert values') {
             steps {          
                 script {
@@ -49,6 +60,9 @@ pipeline {
                     // Execute the operation
                     if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
                     else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
+
+                    // Show the total on the console
+                    echo "total = ${total}"
                 }
             }
         }
