@@ -10,7 +10,7 @@ pipeline {
         string (name: 'firstValueString', description: 'Type the first value.')
         choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
         string (name: 'secondValueString', description: 'Type the second value.')
-        booleanParam (name: 'showHistory', description: "Type true to show calculation history or false to don't show it.")
+        booleanParam (name: 'showHistory', defaultValue: true, description: "Select the checkbox to show calculation history")
     } 
 
     stages {
