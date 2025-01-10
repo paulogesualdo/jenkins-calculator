@@ -1,0 +1,78 @@
+// Declare global variables, shared between the stages
+def existingHistoryContent = ""
+def firstValueNumber
+def operationName
+def secondValueNumber
+
+pipeline {
+    agent any
+    
+    parameters {  
+        string (name: 'firstValueString')
+        string (name: 'operation')
+        string (name: 'secondValueString')
+    }
+
+    environment {
+        def total
+    }
+
+    stages {
+
+        stage('Convert values') {
+            steps {          
+                script {
+                                        
+                    // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
+
+                    try {
+                        firstValueNumber = params.firstValueString.toFloat()
+                    }
+                    catch (NumberFormatException e) {
+                        error "Invalid number format: ${params.firstValueString}"
+                    }
+
+                    try {
+                        secondValueNumber = params.secondValueString.toFloat()
+                    }
+                    catch (NumberFormatException e) {
+                        error "Invalid number format: ${params.secondValueString}"
+                    }
+                }
+            }
+        }
+
+        stage('Calculate') {
+            steps {
+                script {
+                    
+                    // Execute the operation
+                    if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
+                    else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
+                }
+            }
+        }
+
+        stage('Store on calculations history') {
+            steps {
+                script {
+                    
+                    // Declare variables
+                    def newHistoryContent
+
+                    // Store the calculation on newHistoryContent variable
+                    if (operationName == 'addition') newHistoryContent = "${firstValueNumber} + ${secondValueNumber} = ${total}\n"
+                    else if (operationName == 'subtraction') newHistoryContent = "${firstValueNumber} - ${secondValueNumber} = ${total}\n"
+
+                    // Store the calculation on a history file. Create the file if it does not exist
+                    try {
+                        existingHistoryContent = readFile 'history.txt'
+                    } catch (Exception e) {
+                        echo "History file does not exist yet. Creating a new one."
+                    }
+                    writeFile file: 'history.txt', text: existingHistoryContent + newHistoryContent
+                }
+            }
+        }             
+    }
+}

@@ -2,6 +2,7 @@
 def existingHistoryContent = ""
 def firstValueNumber
 def operationName
+def calculation
 def secondValueNumber
 def total
 
@@ -31,36 +32,16 @@ pipeline {
             }
         }
 
-        stage('Convert values') {
-            steps {          
-                script {
-                                        
-                    // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
-
-                    try {
-                        firstValueNumber = firstValueString.toFloat()
-                    }
-                    catch (NumberFormatException e) {
-                        error "Invalid number format: ${firstValueString}"
-                    }
-
-                    try {
-                        secondValueNumber = secondValueString.toFloat()
-                    }
-                    catch (NumberFormatException e) {
-                        error "Invalid number format: ${secondValueString}"
-                    }
-                }
-            }
-        }
-
-        stage('Call calculator pipeline') {
+        stage('Call calculation pipeline') {
             steps {
                 script {
                     
-                    // Execute the operation
-                    if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
-                    else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
+                    // To build the calculation job passing the values and operation as parameters. The result will be stored on the calculation variable
+                    calculation = build job: 'jenkins-calculator-calculate', parameters: [
+                        string (name: 'firstValueString'),
+                        string (name: 'operation'),
+                        string (name: 'secondValueString')
+                    ]                    
                 }
             }
         }
@@ -69,40 +50,21 @@ pipeline {
             steps {
                 script {
                     
+                    // To get the total from the calculation job
+                    total = calculation.buildVariables.total
+                    
                     // Show the total on the console
                     if (operationName == 'addition') echo "${firstValueNumber} + ${secondValueNumber} = ${total}"
                     else if (operationName == 'subtraction')echo "${firstValueNumber} - ${secondValueNumber} = ${total}"
                 }
             }
-        }
-
-        stage('Store on calculations history') {
-            steps {
-                script {
-                    
-                    // Declare variables
-                    def newHistoryContent
-
-                    // Store the calculation on newHistoryContent variable
-                    if (operationName == 'addition') newHistoryContent = "${firstValueNumber} + ${secondValueNumber} = ${total}\n"
-                    else if (operationName == 'subtraction') newHistoryContent = "${firstValueNumber} - ${secondValueNumber} = ${total}\n"
-
-                    // Store the calculation on a history file. Create the file if it does not exist
-                    try {
-                        existingHistoryContent = readFile 'history.txt'
-                    } catch (Exception e) {
-                        echo "History file does not exist yet. Creating a new one."
-                    }
-                    writeFile file: 'history.txt', text: existingHistoryContent + newHistoryContent
-                }
-            }
-        }        
+        }      
 
         stage('Show the calculation history') {
             steps {
                 script {
                     if (params.showHistory == true) {
-                        existingHistoryContent = readFile 'history.txt'
+                        existingHistoryContent = readFile '/var/lib/jenkins/workspace/jenkins-calculator-calculate/history.txt'
                         echo "Calculation history:\n${existingHistoryContent}"
                     }
                     else echo "The user chose not to show the calculation history"
