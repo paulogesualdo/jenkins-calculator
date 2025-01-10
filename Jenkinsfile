@@ -1,4 +1,5 @@
 // Declare global variables, shared between the stages
+def existingHistoryContent = ""
 def firstValueNumber
 def operationName
 def secondValueNumber
@@ -10,7 +11,7 @@ pipeline {
         string (name: 'firstValueString', description: 'Type the first value.')
         choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
         string (name: 'secondValueString', description: 'Type the second value.')
-        booleanParam (name: 'showHistory', defaultValue: true, description: "Select the checkbox to show calculation history")
+        booleanParam (name: 'showHistory', defaultValue: true, description: 'Select the checkbox to show calculation history')
     } 
 
     stages {
@@ -75,10 +76,35 @@ pipeline {
             }
         }
 
+        stage('Store on calculations history') {
+            steps {
+                script {
+                    
+                    // Declare variables
+                    def newHistoryContent
+
+                    // Store the calculation on newHistoryContent variable
+                    if (operationName == 'addition') newHistoryContent = "${firstValueNumber} + ${secondValueNumber} = ${total}\n"
+                    else if (operationName == 'subtraction') newHistoryContent = "${firstValueNumber} - ${secondValueNumber} = ${total}\n"
+
+                    // Store the calculation on a history file. Create the file if it does not exist
+                    try {
+                        existingHistoryContent = readFile 'history.txt'
+                    } catch (Exception e) {
+                        echo "History file does not exist yet. Creating a new one."
+                    }
+                    writeFile file: 'history.txt', text: existingHistoryContent + newHistoryContent
+                }
+            }
+        }        
+
         stage('Show the calculation history') {
             steps {
                 script {
-                    if (params.showHistory == true) echo "The calculation history is: XXXX"
+                    if (params.showHistory == true) {
+                        existingHistoryContent = readFile 'history.txt'
+                        echo "Calculation history:\n${existingHistoryContent}"
+                    }
                     else echo "The user chose not to show the calculation history"
                 }
             }
