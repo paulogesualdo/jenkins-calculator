@@ -9,7 +9,8 @@ pipeline {
     parameters {  
         string (name: 'firstValueString', description: 'Type the first value.')
         choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
-        string (name: 'secondValueString', description: 'Type the second value.')  
+        string (name: 'secondValueString', description: 'Type the second value.')
+        booleanParam (name: 'showHistory', description: "Type true to show calculation history or false to don't show it.")
     } 
 
     stages {
@@ -77,8 +78,8 @@ pipeline {
         stage('Show the calculation history') {
             steps {
                 script {
-                    
-                    echo "The calculation history is: XXXX"
+                    if (params.showHistory == true) echo "The calculation history is: XXXX"
+                    else echo "The user chose not to show the calculation history"
                 }
             }
         }        
