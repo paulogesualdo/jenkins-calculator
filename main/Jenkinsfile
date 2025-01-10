@@ -38,9 +38,9 @@ pipeline {
                     
                     // To build the calculation job passing the values and operation as parameters. The result will be stored on the calculation variable
                     calculation = build job: 'jenkins-calculator-calculate', parameters: [
-                        string (name: 'firstValueString'),
-                        string (name: 'operation'),
-                        string (name: 'secondValueString')
+                        string (name: 'firstValueString', value: firstValueString),
+                        string (name: 'operation', value: operation),
+                        string (name: 'secondValueString', value secondValueString)
                     ]                    
                 }
             }
