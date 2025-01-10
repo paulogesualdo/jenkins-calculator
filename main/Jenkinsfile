@@ -40,7 +40,7 @@ pipeline {
                     calculation = build job: 'jenkins-calculator-calculate', parameters: [
                         string (name: 'firstValueString', value: firstValueString),
                         string (name: 'operation', value: operation),
-                        string (name: 'secondValueString', value secondValueString)
+                        string (name: 'secondValueString', value: secondValueString)
                     ]                    
                 }
             }
