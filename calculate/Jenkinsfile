@@ -8,9 +8,9 @@ pipeline {
     agent any
     
     parameters {  
-        string (name: 'firstValueString')
+        string (name: 'firstValue')
         string (name: 'operation')
-        string (name: 'secondValueString')
+        string (name: 'secondValue')
     }
 
     environment {
@@ -26,17 +26,17 @@ pipeline {
                     // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
 
                     try {
-                        firstValueNumber = params.firstValueString.toFloat()
+                        firstValueNumber = params.firstValue.toFloat()
                     }
                     catch (NumberFormatException e) {
-                        error "Invalid number format: ${params.firstValueString}"
+                        error "Invalid number format: ${params.firstValue}"
                     }
 
                     try {
-                        secondValueNumber = params.secondValueString.toFloat()
+                        secondValueNumber = params.secondValue.toFloat()
                     }
                     catch (NumberFormatException e) {
-                        error "Invalid number format: ${params.secondValueString}"
+                        error "Invalid number format: ${params.secondValue}"
                     }
                 }
             }

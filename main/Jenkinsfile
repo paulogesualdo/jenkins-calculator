@@ -9,9 +9,9 @@ def total
 pipeline {
     agent any
     parameters {  
-        string (name: 'firstValueString', description: 'Type the first value.')
+        string (name: 'firstValue', description: 'Type the first value.')
         choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
-        string (name: 'secondValueString', description: 'Type the second value.')
+        string (name: 'secondValue', description: 'Type the second value.')
         booleanParam (name: 'showHistory', defaultValue: true, description: 'Select the checkbox to show calculation history')
     } 
 
@@ -38,9 +38,9 @@ pipeline {
                     
                     // To build the calculation job passing the values and operation as parameters. The result will be stored on the calculation variable
                     calculation = build job: 'jenkins-calculator-calculate', parameters: [
-                        string (name: 'firstValueString', value: firstValueString),
+                        string (name: 'firstValue', value: firstValue),
                         string (name: 'operation', value: operation),
-                        string (name: 'secondValueString', value: secondValueString)
+                        string (name: 'secondValue', value: secondValue)
                     ]                    
                 }
             }
