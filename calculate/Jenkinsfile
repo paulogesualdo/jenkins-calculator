@@ -1,7 +1,6 @@
 // Declare global variables, shared between the stages
 def existingHistoryContent = ""
 def firstValueNumber
-def operationName
 def secondValueNumber
 
 pipeline {
@@ -9,7 +8,7 @@ pipeline {
     
     parameters {  
         string (name: 'firstValue')
-        string (name: 'operation')
+        string (name: 'operationName')
         string (name: 'secondValue')
     }
 
@@ -24,12 +23,14 @@ pipeline {
                 script {
 
                     // Show received values on the console         
+                    echo "Received Values"
                     echo "firstValue = ${firstValue}"
-                    echo "operation = ${operation}"
+                    echo "operationName = ${operationName}"
                     echo "secondValue = ${secondValue}"
                 }
             }
         }        
+        
         stage('Convert values') {
             steps {          
                 script {
@@ -49,6 +50,11 @@ pipeline {
                     catch (NumberFormatException e) {
                         error "Invalid number format: ${params.secondValue}"
                     }
+
+                    // Show converted values on the console         
+                    echo "Converted Values"
+                    echo "firstValueNumber = ${firstValueNumber}"
+                    echo "secondValueNumber = ${secondValueNumber}"
                 }
             }
         }
