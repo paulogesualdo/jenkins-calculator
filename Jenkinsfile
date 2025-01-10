@@ -1,18 +1,12 @@
 pipeline {
     agent any
     parameters {  
-        string(name: 'firstValue', description: 'Type the first value.')
-        string(name: 'operation', description: 'Type + for addition or - for subtraction.')
-        string(name: 'secondValue', description: 'Type the first value.')  
+        string (name: 'firstValue', description: 'Type the first value.')
+        choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
+        string (name: 'secondValue', description: 'Type the second value.')  
     } 
 
     stages {
-
-        stage('Show current total') {
-            steps {
-                echo 'The current total is: XXXX'
-            }
-        }
 
         stage('Check operation') {
             steps {          
@@ -50,5 +44,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Show the calculation history') {
+            steps {
+                script {
+                    
+                    echo "The calculation history is: XXXX"
+                }
+            }
+        }        
     }
 }
