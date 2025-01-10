@@ -36,11 +36,19 @@ pipeline {
                     
                     // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
 
-                    try firstValueNumber = firstValueString.toFloat()
-                    catch (NumberFormatException e) error "Invalid number format: ${firstValueString}"
+                    try {
+                        firstValueNumber = firstValueString.toFloat()
+                    }
+                    catch (NumberFormatException e) {
+                        error "Invalid number format: ${firstValueString}"
+                    }
 
-                    try secondValueNumber = secondValueString.toFloat()
-                    catch (NumberFormatException e) error "Invalid number format: ${secondValueString}"
+                    try {
+                        secondValueNumber = secondValueString.toFloat()
+                    }
+                    catch (NumberFormatException e) {
+                        error "Invalid number format: ${secondValueString}"
+                    }
                 }
             }
         }
