@@ -1,3 +1,9 @@
+// Declare global variables, shared between the stages
+def firstValueNumber
+def operationName
+def secondValueNumber
+def total
+
 pipeline {
     agent any
     parameters {  
@@ -11,10 +17,7 @@ pipeline {
         stage('Check operation') {
             steps {          
                 script {
-                    
-                    // Declare variables
-                    def operationName
-                    
+                                        
                     // Check if the parameter is "+" or "-". Fail the pipeline if it doesn't match any of the values
                     if (params.operation == '+') operationName = 'addition'
                     else if (params.operation == '-') operationName = 'subtraction'
@@ -29,11 +32,7 @@ pipeline {
         stage('Convert values') {
             steps {          
                 script {
-                    
-                    // Declare variables
-                    def firstValueNumber
-                    def secondValueNumber
-                    
+                                        
                     // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
 
                     try {
@@ -57,9 +56,6 @@ pipeline {
             steps {
                 script {
                     
-                    // Declare variables
-                    def total
-
                     // Execute the operation
                     if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
                     else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
