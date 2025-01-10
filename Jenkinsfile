@@ -1,9 +1,9 @@
 pipeline {
     agent any
     parameters {  
-        string (name: 'firstValue', description: 'Type the first value.')
+        string (name: 'firstValueString', description: 'Type the first value.')
         choice (name: 'operation', choices: ['+', '-'], description: 'Choose + for addition or - for subtraction.')
-        string (name: 'secondValue', description: 'Type the second value.')  
+        string (name: 'secondValueString', description: 'Type the second value.')  
     } 
 
     stages {
@@ -11,6 +11,9 @@ pipeline {
         stage('Check operation') {
             steps {          
                 script {
+                    
+                    // Declare variables
+                    def operationName
                     
                     // Check if the parameter is "+" or "-". Fail the pipeline if it doesn't match any of the values
                     if (params.operation == '+') operationName = 'addition'
@@ -23,13 +26,35 @@ pipeline {
             }
         }
 
+        stage('Convert values') {
+            steps {          
+                script {
+                    
+                    // Declare variables
+                    def firstValueNumber
+                    def secondValueNumber
+                    
+                    // Try to convert the values from string to float. In case of failure, fail the pipeline showing an error message. The values were received as strings because it is not possible to receive them directly as floats. It would be possible to receive them as integers
+
+                    try firstValueNumber = firstValueString.toFloat()
+                    catch (NumberFormatException e) error "Invalid number format: ${firstValueString}"
+
+                    try secondValueNumber = secondValueString.toFloat()
+                    catch (NumberFormatException e) error "Invalid number format: ${secondValueString}"
+                }
+            }
+        }
+
         stage('Call calculator pipeline') {
             steps {
                 script {
                     
+                    // Declare variables
+                    def total
+
                     // Execute the operation
-                    if (operationName == 'addition') total = firstValue + secondValue    
-                    else if (operationName == 'subtraction') total = firstValue - secondValue
+                    if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
+                    else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
                 }
             }
         }
@@ -39,8 +64,8 @@ pipeline {
                 script {
                     
                     // Show the total on the console
-                    if (operationName == 'addition') echo "${firstValue} + ${secondValue} = ${total}"
-                    else if (operationName == 'subtraction')echo "${firstValue} - ${secondValue} = ${total}"
+                    if (operationName == 'addition') echo "${firstValueNumber} + ${secondValueNumber} = ${total}"
+                    else if (operationName == 'subtraction')echo "${firstValueNumber} - ${secondValueNumber} = ${total}"
                 }
             }
         }
