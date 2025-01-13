@@ -54,8 +54,8 @@ pipeline {
                     total = calculation.buildVariables.total
                     
                     // Show the total on the console
-                    if (operationName == 'addition') echo "${firstValueNumber} + ${secondValueNumber} = ${total}"
-                    else if (operationName == 'subtraction')echo "${firstValueNumber} - ${secondValueNumber} = ${total}"
+                    if (operationName == 'addition') echo "${firstValue} + ${secondValue} = ${total}"
+                    else if (operationName == 'subtraction')echo "${firstValue} - ${secondValue} = ${total}"
                 }
             }
         }      
