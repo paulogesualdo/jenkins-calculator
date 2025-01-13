@@ -3,6 +3,10 @@ def existingHistoryContent = ""
 def firstValueNumber
 def secondValueNumber
 
+environment {
+    total = 0
+}
+
 pipeline {
     agent any
     
@@ -10,10 +14,6 @@ pipeline {
         string (name: 'firstValue')
         string (name: 'operationName')
         string (name: 'secondValue')
-    }
-
-    environment {
-        total = 0
     }
 
     stages {
