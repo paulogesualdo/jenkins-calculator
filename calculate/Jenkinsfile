@@ -13,7 +13,7 @@ pipeline {
     }
 
     environment {
-        total = 0
+        total
     }
 
     stages {
@@ -64,11 +64,11 @@ pipeline {
                 script {
                     
                     // Execute the operation
-                    if (operationName == 'addition') total = firstValueNumber + secondValueNumber    
-                    else if (operationName == 'subtraction') total = firstValueNumber - secondValueNumber
+                    if (operationName == 'addition') env.total = firstValueNumber + secondValueNumber    
+                    else if (operationName == 'subtraction') env.total = firstValueNumber - secondValueNumber
 
                     // Show the total on the console
-                    echo "total = ${total}"
+                    echo "total = ${env.total}"
                 }
             }
         }
@@ -81,8 +81,8 @@ pipeline {
                     def newHistoryContent
 
                     // Store the calculation on newHistoryContent variable
-                    if (operationName == 'addition') newHistoryContent = "${firstValueNumber} + ${secondValueNumber} = ${total}\n"
-                    else if (operationName == 'subtraction') newHistoryContent = "${firstValueNumber} - ${secondValueNumber} = ${total}\n"
+                    if (operationName == 'addition') newHistoryContent = "${firstValueNumber} + ${secondValueNumber} = ${env.total}\n"
+                    else if (operationName == 'subtraction') newHistoryContent = "${firstValueNumber} - ${secondValueNumber} = ${env.total}\n"
 
                     // Store the calculation on a history file. Create the file if it does not exist
                     try {
